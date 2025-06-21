@@ -12,8 +12,16 @@ func GetAll() ([]User, error) {
 	return users, err
 }
 
-func GetByID(id string) (User, error) {
+func GetByID(id uint) (User, error) {
 	var user User
 	err := db.DB.First(&user, id).Error
 	return user, err
+}
+
+func Update(u *User) (*User, error) {
+	return u, db.DB.Save(u).Error
+}
+
+func Delete(id uint) error {
+	return db.DB.Delete(&User{}, id).Error
 }

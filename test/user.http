@@ -3,8 +3,8 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-    "name": "Jane Doe",
-    "email": "jane@google.com"
+  "name": "Jane Doe",
+  "email": "jane@google.com"
 }
 
 ### GET users
@@ -13,3 +13,26 @@ GET localhost:8080/users
 
 ### GET user #2
 GET localhost:8080/users/2
+
+
+### DELETE user #2
+DELETE localhost:8080/users/2
+
+
+### PATCH user #3
+PATCH localhost:8080/users/34444
+Content-Type: application/json
+
+{
+  "name": "Gildong Hong",
+  "email": "cantcallfather@father.com"
+}
+
+### PUT user #4
+PUT localhost:8080/users/66666
+Content-Type: application/json
+
+{
+  "name": "Jane Kim",
+  "email": "kimjane@whatthe.com"
+}

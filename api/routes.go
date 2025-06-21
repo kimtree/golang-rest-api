@@ -9,4 +9,7 @@ func RegisterRoutes(r *gin.Engine) {
 	r.POST("/users", user.CreateHandler)
 	r.GET("/users", user.GetAllHandler)
 	r.GET("/users/:id", user.GetByIDHandler)
+	r.PUT("/users/:id", user.UpdateAllHandler)
+	r.PATCH("/users/:id", user.UpdatePartialHandler)
+	r.DELETE("/users/:id", user.DeleteHandler)
 }
