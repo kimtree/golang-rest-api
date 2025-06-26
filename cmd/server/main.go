@@ -34,7 +34,7 @@ func retrieveConfig() configs.Config {
 	return config
 }
 
-func initalizeDB(endpoint string) {
+func initializeDB(endpoint string) {
 	db.Connect(endpoint)
 	if err := db.Migrate(&user.User{}); err != nil {
 		slog.Error("db migrate error", slog.Any("err", err))
@@ -49,7 +49,7 @@ func initalizeDB(endpoint string) {
 func main() {
 	config := retrieveConfig()
 
-	initalizeDB(config.Database.Endpoint)
+	initializeDB(config.Database.Endpoint)
 
 	r := gin.Default()
 	r.Use(gin.Recovery())
