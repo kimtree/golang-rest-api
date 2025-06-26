@@ -17,6 +17,16 @@ func CreateHandler(c *gin.Context) {
 		Email: req.Email,
 	}
 
+	user, err := GetByEmail(u.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if user != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})
+		return
+	}
+
 	if err := Create(&u); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -30,8 +40,8 @@ func GetAllHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	perPage := 1
 	page := max(1, req.Page)
+	perPage := min(10, max(1, req.PageSize))
 	offset := (page - 1) * perPage
 
 	users, err := GetAll(offset, perPage)
@@ -114,7 +124,7 @@ func UpdatePartialHandler(c *gin.Context) {
 		u.Email = *req.Email
 	}
 
-	user, err := Update(&u)
+	user, err := Update(u)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

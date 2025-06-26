@@ -4,11 +4,11 @@ Content-Type: application/json
 
 {
   "name": "Jane Doe",
-  "email": "jane@google.com"
+  "email": "iam@kimtree.net"
 }
 
 ### GET users
-GET localhost:8080/v1/users?page=4
+GET localhost:8080/v1/users?page=1&page_size=10
 
 
 ### GET user #2

@@ -1,6 +1,10 @@
 package user
 
-import "web/pkg/db"
+import (
+	"errors"
+	"gorm.io/gorm"
+	"web/pkg/db"
+)
 
 func Create(u *User) error {
 	return db.DB.Create(u).Error
@@ -12,10 +16,19 @@ func GetAll(offset, limit int) ([]User, error) {
 	return users, err
 }
 
-func GetByID(id uint) (User, error) {
+func GetByID(id uint) (*User, error) {
 	var user User
 	err := db.DB.First(&user, id).Error
-	return user, err
+	return &user, err
+}
+
+func GetByEmail(email string) (*User, error) {
+	var user User
+	err := db.DB.Where("email = ?", email).Take(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return &user, err
 }
 
 func Update(u *User) (*User, error) {

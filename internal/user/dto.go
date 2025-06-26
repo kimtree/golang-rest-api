@@ -15,5 +15,6 @@ type PatchUserReq struct {
 }
 
 type GetAllUsersReq struct {
-	Page int `form:"page"`
+	Page     int `form:"page"`
+	PageSize int `form:"page_size"`
 }
