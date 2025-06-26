@@ -1,10 +1,19 @@
 package comment
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
+// @Summary Create a copmment
+// @Description This API will create a comment
+// @Tags        comments
+// @Accept json
+// @Produce json
+// @Param       request body CreateCommentReq true "Comment"
+// @Success 201 {object} Comment
+// @Router /comments [post]
 func CreateHandler(c *gin.Context) {
 	var req CreateCommentReq
 	if err := c.BindJSON(&req); err != nil {

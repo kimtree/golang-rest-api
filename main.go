@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"gorm.io/gorm"
 	"log/slog"
 	"os"
-	"web/api"
 	"web/configs"
+	_ "web/docs"
 	"web/internal/comment"
+	"web/internal/pkg/db"
 	"web/internal/user"
-	"web/pkg/db"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 func retrieveConfig() configs.Config {
@@ -49,6 +52,9 @@ func initializeDB(endpoint string) *gorm.DB {
 	return database
 }
 
+// @title       REST API
+// @version     1.0
+// @description API documentation
 func main() {
 	config := retrieveConfig()
 
@@ -58,7 +64,10 @@ func main() {
 
 	r := gin.Default()
 	r.Use(gin.Recovery())
-	api.RegisterRoutes(r, userRepo)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	user.RegisterRoutes(r, userRepo)
+	comment.RegisterRoutes(r)
 
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")

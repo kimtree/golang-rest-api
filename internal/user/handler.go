@@ -15,6 +15,14 @@ func NewHandler(repo Repository) *Handler {
 	}
 }
 
+// @Summary Create a user
+// @Description This API will create a user
+// @Tags        users
+// @Accept json
+// @Produce json
+// @Param       request body user.CreateUserReq true "User Info"
+// @Success 201 {object} user.User
+// @Router /users [post]
 func (h *Handler) CreateHandler(c *gin.Context) {
 	var req CreateUserReq
 	if err := c.BindJSON(&req); err != nil {

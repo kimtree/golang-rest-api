@@ -1,6 +1,8 @@
 package comment
 
-import "web/pkg/db"
+import (
+	"web/internal/pkg/db"
+)
 
 func Create(c *Comment) error {
 	return db.DB.Create(c).Error

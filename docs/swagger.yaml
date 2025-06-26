@@ -1,0 +1,94 @@
+definitions:
+  comment.Comment:
+    properties:
+      id:
+        type: integer
+      text:
+        type: string
+      userID:
+        type: integer
+    type: object
+  comment.CreateCommentReq:
+    properties:
+      text:
+        type: string
+      userID:
+        type: integer
+    required:
+    - text
+    - userID
+    type: object
+  user.CreateUserReq:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  user.User:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/comment.Comment'
+        type: array
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API documentation
+  title: REST API
+  version: "1.0"
+paths:
+  /comments:
+    post:
+      consumes:
+      - application/json
+      description: This API will create a comment
+      parameters:
+      - description: Comment
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/comment.CreateCommentReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/comment.Comment'
+      summary: Create a copmment
+      tags:
+      - comments
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: This API will create a user
+      parameters:
+      - description: User Info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.User'
+      summary: Create a user
+      tags:
+      - users
+swagger: "2.0"
