@@ -25,7 +25,16 @@ func CreateHandler(c *gin.Context) {
 }
 
 func GetAllHandler(c *gin.Context) {
-	users, err := GetAll()
+	var req GetAllUsersReq
+	if err := c.BindQuery(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	perPage := 1
+	page := max(1, req.Page)
+	offset := (page - 1) * perPage
+
+	users, err := GetAll(offset, perPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

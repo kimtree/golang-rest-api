@@ -13,3 +13,7 @@ type PatchUserReq struct {
 	Name  *string `json:"name" binding:"omitempty"`
 	Email *string `json:"email" binding:"omitempty,email"`
 }
+
+type GetAllUsersReq struct {
+	Page int `form:"page"`
+}

@@ -6,9 +6,9 @@ func Create(u *User) error {
 	return db.DB.Create(u).Error
 }
 
-func GetAll() ([]User, error) {
+func GetAll(offset, limit int) ([]User, error) {
 	var users []User
-	err := db.DB.Preload("Comments").Find(&users).Error
+	err := db.DB.Preload("Comments").Offset(offset).Limit(limit).Find(&users).Error
 	return users, err
 }
 

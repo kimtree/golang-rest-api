@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### GET users
-GET localhost:8080/v1/users
+GET localhost:8080/v1/users?page=4
 
 
 ### GET user #2
