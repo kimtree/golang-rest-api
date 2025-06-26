@@ -8,7 +8,7 @@ func Create(u *User) error {
 
 func GetAll() ([]User, error) {
 	var users []User
-	err := db.DB.Find(&users).Error
+	err := db.DB.Preload("Comments").Find(&users).Error
 	return users, err
 }
 

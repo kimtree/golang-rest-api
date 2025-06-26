@@ -8,6 +8,7 @@ import (
 	"os"
 	"web/api"
 	"web/configs"
+	"web/internal/comment"
 	"web/internal/user"
 	"web/pkg/db"
 )
@@ -36,6 +37,10 @@ func retrieveConfig() configs.Config {
 func initalizeDB(endpoint string) {
 	db.Connect(endpoint)
 	if err := db.Migrate(&user.User{}); err != nil {
+		slog.Error("db migrate error", slog.Any("err", err))
+		os.Exit(1)
+	}
+	if err := db.Migrate(&comment.Comment{}); err != nil {
 		slog.Error("db migrate error", slog.Any("err", err))
 		os.Exit(1)
 	}

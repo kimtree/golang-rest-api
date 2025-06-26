@@ -36,3 +36,12 @@ Content-Type: application/json
   "name": "Jane Kim",
   "email": "kimjane@whatthe.com"
 }
+
+### POST comment
+POST localhost:8080/v1/comments
+Content-Type: application/json
+
+{
+  "userID": 4,
+  "text": "Setting up my twitter"
+}
