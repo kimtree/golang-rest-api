@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"log/slog"
 	"os"
 	"web/api"
@@ -34,26 +35,30 @@ func retrieveConfig() configs.Config {
 	return config
 }
 
-func initializeDB(endpoint string) {
-	db.Connect(endpoint)
-	if err := db.Migrate(&user.User{}); err != nil {
+func initializeDB(endpoint string) *gorm.DB {
+	database := db.Connect(endpoint)
+	if err := database.AutoMigrate(&user.User{}); err != nil {
 		slog.Error("db migrate error", slog.Any("err", err))
 		os.Exit(1)
 	}
-	if err := db.Migrate(&comment.Comment{}); err != nil {
+	if err := database.AutoMigrate(&comment.Comment{}); err != nil {
 		slog.Error("db migrate error", slog.Any("err", err))
 		os.Exit(1)
 	}
+
+	return database
 }
 
 func main() {
 	config := retrieveConfig()
 
-	initializeDB(config.Database.Endpoint)
+	db := initializeDB(config.Database.Endpoint)
+
+	userRepo := user.NewDBRepository(db)
 
 	r := gin.Default()
 	r.Use(gin.Recovery())
-	api.RegisterRoutes(r)
+	api.RegisterRoutes(r, userRepo)
 
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")

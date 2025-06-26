@@ -5,7 +5,17 @@ import (
 	"net/http"
 )
 
-func CreateHandler(c *gin.Context) {
+type Handler struct {
+	repo Repository
+}
+
+func NewHandler(repo Repository) *Handler {
+	return &Handler{
+		repo: repo,
+	}
+}
+
+func (h *Handler) CreateHandler(c *gin.Context) {
 	var req CreateUserReq
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -17,7 +27,7 @@ func CreateHandler(c *gin.Context) {
 		Email: req.Email,
 	}
 
-	user, err := GetByEmail(u.Email)
+	user, err := h.repo.GetByEmail(u.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -27,14 +37,14 @@ func CreateHandler(c *gin.Context) {
 		return
 	}
 
-	if err := Create(&u); err != nil {
+	if err := h.repo.Create(&u); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, u)
 }
 
-func GetAllHandler(c *gin.Context) {
+func (h *Handler) GetAllHandler(c *gin.Context) {
 	var req GetAllUsersReq
 	if err := c.BindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -44,7 +54,7 @@ func GetAllHandler(c *gin.Context) {
 	perPage := min(10, max(1, req.PageSize))
 	offset := (page - 1) * perPage
 
-	users, err := GetAll(offset, perPage)
+	users, err := h.repo.GetAll(offset, perPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -53,14 +63,14 @@ func GetAllHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func GetByIDHandler(c *gin.Context) {
+func (h *Handler) GetByIDHandler(c *gin.Context) {
 	var p UriParams
 	if err := c.BindUri(&p); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := GetByID(p.ID)
+	user, err := h.repo.GetByID(p.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -69,7 +79,7 @@ func GetByIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func UpdateAllHandler(c *gin.Context) {
+func (h *Handler) UpdateAllHandler(c *gin.Context) {
 	var p UriParams
 	if err := c.BindUri(&p); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -88,7 +98,7 @@ func UpdateAllHandler(c *gin.Context) {
 		Email: req.Email,
 	}
 
-	user, err := Update(&u)
+	user, err := h.repo.Update(&u)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -97,7 +107,7 @@ func UpdateAllHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func UpdatePartialHandler(c *gin.Context) {
+func (h *Handler) UpdatePartialHandler(c *gin.Context) {
 	var p UriParams
 	if err := c.BindUri(&p); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -111,7 +121,7 @@ func UpdatePartialHandler(c *gin.Context) {
 	}
 
 	// ID 존재하지 않는 경우 이슈
-	u, err := GetByID(p.ID)
+	u, err := h.repo.GetByID(p.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -124,7 +134,7 @@ func UpdatePartialHandler(c *gin.Context) {
 		u.Email = *req.Email
 	}
 
-	user, err := Update(u)
+	user, err := h.repo.Update(u)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -133,14 +143,14 @@ func UpdatePartialHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func DeleteHandler(c *gin.Context) {
+func (h *Handler) DeleteHandler(c *gin.Context) {
 	var p UriParams
 	if err := c.BindUri(&p); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := Delete(p.ID); err != nil {
+	if err := h.repo.Delete(p.ID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

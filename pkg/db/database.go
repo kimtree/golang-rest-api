@@ -8,7 +8,7 @@ import (
 
 var DB *gorm.DB
 
-func Connect(endpoint string) {
+func Connect(endpoint string) *gorm.DB {
 	database, err := gorm.Open(sqlite.Open(endpoint), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -16,9 +16,5 @@ func Connect(endpoint string) {
 		panic("Db 연결에 실패하였습니다.")
 	}
 
-	DB = database
-}
-
-func Migrate(model interface{}) error {
-	return DB.AutoMigrate(model)
+	return database
 }
